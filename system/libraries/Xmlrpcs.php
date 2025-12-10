@@ -173,15 +173,14 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 	 */
 	function parseRequest($data='')
 	{
-		global $HTTP_RAW_POST_DATA;
-
 		//-------------------------------------
 		//  Get Data
 		//-------------------------------------
 
 		if ($data == '')
 		{
-			$data = $HTTP_RAW_POST_DATA;
+			// $HTTP_RAW_POST_DATA was removed in PHP 7.2, use php://input instead
+			$data = file_get_contents('php://input');
 		}
 
 		//-------------------------------------
@@ -565,7 +564,9 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 			return $this->multicall_error('nomethod');
 		}
 
-		list($scalar_type,$scalar_value)=each($methName->me);
+		reset($methName->me);
+		$scalar_type = key($methName->me);
+		$scalar_value = current($methName->me);
 		$scalar_type = $scalar_type == $this->xmlrpcI4 ? $this->xmlrpcInt : $scalar_type;
 
 		if ($methName->kindOf() != 'scalar' OR $scalar_type != 'string')
@@ -585,8 +586,9 @@ class CI_Xmlrpcs extends CI_Xmlrpc
 			return $this->multicall_error('notarray');
 		}
 
-		list($a,$b)=each($params->me);
-		$numParams = count($b);
+		reset($params->me);
+		$params_array = current($params->me);
+		$numParams = count($params_array);
 
 		$msg = new XML_RPC_Message($scalar_value);
 		for ($i = 0; $i < $numParams; $i++)

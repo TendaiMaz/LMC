@@ -1080,7 +1080,8 @@ class CI_Upload {
 				}
 			}
 
-			if ( (bool) @ini_get('safe_mode') === FALSE && function_exists('shell_exec'))
+			// safe_mode was removed in PHP 7.4, so we can check shell_exec directly
+			if (function_exists('shell_exec'))
 			{
 				$mime = @shell_exec($cmd);
 				if (strlen($mime) > 0)

@@ -92,7 +92,8 @@ class CI_Email {
 		else
 		{
 			$this->_smtp_auth = ($this->smtp_user == '' AND $this->smtp_pass == '') ? FALSE : TRUE;
-			$this->_safe_mode = ((boolean)@ini_get("safe_mode") === FALSE) ? FALSE : TRUE;
+			// safe_mode was removed in PHP 7.4, so _safe_mode is always FALSE
+			$this->_safe_mode = FALSE;
 		}
 
 		log_message('debug', "Email Class Initialized");
@@ -128,7 +129,8 @@ class CI_Email {
 		$this->clear();
 
 		$this->_smtp_auth = ($this->smtp_user == '' AND $this->smtp_pass == '') ? FALSE : TRUE;
-		$this->_safe_mode = ((boolean)@ini_get("safe_mode") === FALSE) ? FALSE : TRUE;
+		// safe_mode was removed in PHP 7.4, so _safe_mode is always FALSE
+		$this->_safe_mode = FALSE;
 
 		return $this;
 	}

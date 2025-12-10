@@ -102,7 +102,8 @@
  *  Set a liberal script execution time limit
  * ------------------------------------------------------
  */
-	if (function_exists("set_time_limit") == TRUE AND @ini_get("safe_mode") == 0)
+	// safe_mode was removed in PHP 7.4, so we can always set time limit if function exists
+	if (function_exists("set_time_limit") == TRUE)
 	{
 		@set_time_limit(300);
 	}

@@ -71,13 +71,14 @@ if ( ! function_exists('is_really_writable'))
 {
 	function is_really_writable($file)
 	{
-		// If we're on a Unix server with safe_mode off we call is_writable
-		if (DIRECTORY_SEPARATOR == '/' AND @ini_get("safe_mode") == FALSE)
+		// If we're on a Unix server we call is_writable
+		// safe_mode was removed in PHP 7.4, so we can always use is_writable on Unix
+		if (DIRECTORY_SEPARATOR == '/')
 		{
 			return is_writable($file);
 		}
 
-		// For windows servers and safe_mode "on" installations we'll actually
+		// For windows servers we'll actually
 		// write a file then read it.  Bah...
 		if (is_dir($file))
 		{
@@ -477,7 +478,7 @@ if ( ! function_exists('_exception_handler'))
 		 // you'll get notices telling you that these have been deprecated.
 		if ($severity == E_STRICT)
 		{
-			return;
+			return false;
 		}
 
 		$_error =& load_class('Exceptions', 'core');
@@ -492,10 +493,11 @@ if ( ! function_exists('_exception_handler'))
 		// Should we log the error?  No?  We're done...
 		if (config_item('log_threshold') == 0)
 		{
-			return;
+			return false;
 		}
 
 		$_error->log_exception($severity, $message, $filepath, $line);
+		return false;
 	}
 }
 
